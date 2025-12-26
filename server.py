@@ -1,5 +1,8 @@
+from flask import Flask, request
 import subprocess
 import requests
+
+app = Flask(__name__)
 
 # URL Webhook Discord (Pour renvoyer les infos reçues)
 WEBHOOK_URL = "https://discord.com/api/webhooks/1454123204246241431/FKBtOdjjS7WnmMIgRB4RMGEv1rZG51vm9ePVpZFf_u8YSo9vzkVUINpwnTCM8r3LLFmG"
